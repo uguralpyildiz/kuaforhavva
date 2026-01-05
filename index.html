@@ -1347,6 +1347,34 @@
         </div>
     </div>
 </section>
+<style>
+    /* Başarı durumunda butonun alacağı stil */
+    .btn-success-active {
+        background-color: #004731 !important;
+        /* Emerald 600 */
+        box-shadow: 0 0 20px rgba(5, 150, 104, 0.185);
+        pointer-events: none;
+        /* 10 saniye boyunca tekrar tıklanamaz */
+    }
+
+    /* Metin geçiş animasyonları */
+    .fade-up-out {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    .fade-up-in {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    #successContent {
+        transform: translateY(20px);
+        transition: all 0.4s ease;
+    }
+</style>
+<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+
     <section id="iletisim" class="py-24 bg-stone-900 text-white">
         <div class="container mx-auto px-6">
             <div class="flex flex-col lg:flex-row gap-20">
@@ -1366,18 +1394,97 @@
                             <p>info@kuaforhavva.com</p>
                         </div>
                     </div>
-                    <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" placeholder="Ad Soyad" class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white">
-                        <input type="tel" placeholder="Telefon" class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white">
-                        <select class="bg-stone-800 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-stone-400 md:col-span-2">
-                            <option>İstenen Hizmet</option>
-                            <option>Saç Kesimi</option>
-                            <option>Renklendirme</option>
-                            <option>Gelin Paketi</option>
+                    
+                    <form id="appointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-4" action="https://formspree.io/f/xykzoozp"
+                        method="POST" target="dummyframe">
+                        <input name="isim" type="text" placeholder="Ad Soyad" required
+                            class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white placeholder-gray-500">
+                        <input name="telefon" type="tel" placeholder="Telefon" required
+                            class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white placeholder-gray-500">
+                    
+                        <select name="hizmet"
+                            class="bg-stone-800 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-gray-400 md:col-span-2">
+                            <option value="hizmetyok" name="hizmetyok">İstenen Hizmet</option>
+                            <option value="sac-kesim" name="sac-kesim">Saç Kesimi</option>
+                            <option value="renklendirme" name="renklendirme">Renklendirme</option>
                         </select>
-                        <textarea placeholder="Notunuz" rows="4" class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white md:col-span-2"></textarea>
-                        <button class="bg-rose-700 hover:bg-rose-800 text-white py-4 rounded-xl font-bold uppercase tracking-widest transition md:col-span-2">Mesajı Gönder</button>
+                    
+                        <textarea name="not" placeholder="Notunuz" rows="4"
+                            class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white placeholder-gray-500 md:col-span-2"></textarea>
+                    
+                        <div class="md:col-span-2 relative">
+                            <button id="submitBtn" type="submit"
+                                class="w-full bg-rose-700 hover:bg-rose-800 text-white py-4 rounded-xl font-bold uppercase tracking-widest transition-all duration-500 ease-in-out overflow-hidden min-h-[60px] flex items-center justify-center">
+                    
+                                <span id="btnText" class="inline-block transition-all duration-300">Mesajı Gönder</span>
+                    
+                                <div id="successContent" class="hidden opacity-0 flex items-center justify-center gap-3">
+                                    <div class="bg-white/20 p-1 rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                    </div>
+                                    <div class="text-left leading-tight tracking-normal lowercase first-letter:uppercase">
+                                        <p class="font-bold text-sm">Randevunuz oluşturuldu!</p>
+                                        <p class="text-[11px] opacity-80">Gün içinde sizi arayacağız.</p>
+                                    </div>
+                                </div>
+                    
+                            </button>
+                        </div>
                     </form>
+                    
+                    <iframe name="dummyframe" id="dummyframe" style="display:none;"></iframe>
+                    <script>
+                        const form = document.getElementById('appointmentForm');
+                        const btn = document.getElementById('submitBtn');
+                        const btnText = document.getElementById('btnText');
+                        const successContent = document.getElementById('successContent');
+
+                        form.addEventListener('submit', function () {
+                            // 1. Yazıyı dışarı at
+                            btnText.classList.add('fade-up-out');
+
+                            setTimeout(() => {
+                                btnText.style.display = 'none';
+
+                                // 2. Buton rengini değiştir ve başarı kutusunu göster
+                                btn.classList.add('btn-success-active');
+                                successContent.classList.remove('hidden');
+
+                                // 3. Başarı metnini içeri kaydır
+                                setTimeout(() => {
+                                    successContent.classList.add('fade-up-in');
+                                }, 50);
+                            }, 300);
+
+                            // 4. Form değerlerini sıfırla
+                            form.reset();
+
+                            // 5. 10 saniye bekleyip eski haline döndür
+                            setTimeout(() => {
+                                resetButtonToOriginal();
+                            }, 13000);
+                        });
+
+                        function resetButtonToOriginal() {
+                            // Başarı içeriğini aşağı kaydırarak gizle
+                            successContent.classList.remove('fade-up-in');
+
+                            setTimeout(() => {
+                                successContent.classList.add('hidden');
+                                btn.classList.remove('btn-success-active');
+                                btnText.style.display = 'inline-block';
+
+                                setTimeout(() => {
+                                    btnText.classList.remove('fade-up-out');
+                                }, 50);
+                            }, 400);
+                        }
+                    </script>
+                    <iframe name="dummyframe" id="dummyframe" style="display:none;"></iframe>
+                    
                 </div>
                 <div class="lg:w-1/2 h-[600px] relative">
                     <iframe
