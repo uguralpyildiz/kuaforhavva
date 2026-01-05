@@ -1397,16 +1397,18 @@
                     
                     <form id="appointmentForm" class="grid grid-cols-1 md:grid-cols-2 gap-4" action="https://formspree.io/f/xykzoozp"
                         method="POST" target="dummyframe">
+                    
                         <input name="isim" type="text" placeholder="Ad Soyad" required
                             class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white placeholder-gray-500">
+                    
                         <input name="telefon" type="tel" placeholder="Telefon" required
                             class="bg-white/5 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-white placeholder-gray-500">
                     
-                        <select name="hizmet"
+                        <select name="hizmet" required
                             class="bg-stone-800 border border-white/10 p-4 rounded-xl focus:outline-none focus:border-rose-500 text-gray-400 md:col-span-2">
-                            <option value="hizmetyok" name="hizmetyok">İstenen Hizmet</option>
-                            <option value="sac-kesim" name="sac-kesim">Saç Kesimi</option>
-                            <option value="renklendirme" name="renklendirme">Renklendirme</option>
+                            <option value="" disabled selected>İstenen Hizmet</option>
+                            <option value="Saç Kesimi">Saç Kesimi</option>
+                            <option value="Renklendirme">Renklendirme</option>
                         </select>
                     
                         <textarea name="not" placeholder="Notunuz" rows="4"
@@ -1416,7 +1418,9 @@
                             <button id="submitBtn" type="submit"
                                 class="w-full bg-rose-700 hover:bg-rose-800 text-white py-4 rounded-xl font-bold uppercase tracking-widest transition-all duration-500 ease-in-out overflow-hidden min-h-[60px] flex items-center justify-center">
                     
-                                <span id="btnText" class="inline-block transition-all duration-300">Mesajı Gönder</span>
+                                <span id="btnText" class="inline-block transition-all duration-300">
+                                    Mesajı Gönder
+                                </span>
                     
                                 <div id="successContent" class="hidden opacity-0 flex items-center justify-center gap-3">
                                     <div class="bg-white/20 p-1 rounded-full">
@@ -1425,6 +1429,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                         </svg>
                                     </div>
+                    
                                     <div class="text-left leading-tight tracking-normal lowercase first-letter:uppercase">
                                         <p class="font-bold text-sm">Randevunuz oluşturuldu!</p>
                                         <p class="text-[11px] opacity-80">Gün içinde sizi arayacağız.</p>
@@ -1433,57 +1438,45 @@
                     
                             </button>
                         </div>
-                    </form>
                     
-                    <iframe name="dummyframe" id="dummyframe" style="display:none;"></iframe>
+                    </form>
+
+                    
+                 
                     <script>
                         const form = document.getElementById('appointmentForm');
                         const btn = document.getElementById('submitBtn');
                         const btnText = document.getElementById('btnText');
                         const successContent = document.getElementById('successContent');
 
-                        form.addEventListener('submit', function () {
-                            // 1. Yazıyı dışarı at
+                        form.addEventListener('submit', function (e) {
+                            // verilerin gitmesi için default submit bırak
+                            // JS sadece animasyon işlesin, form.reset() timeout ile
+
                             btnText.classList.add('fade-up-out');
 
                             setTimeout(() => {
                                 btnText.style.display = 'none';
-
-                                // 2. Buton rengini değiştir ve başarı kutusunu göster
                                 btn.classList.add('btn-success-active');
                                 successContent.classList.remove('hidden');
 
-                                // 3. Başarı metnini içeri kaydır
                                 setTimeout(() => {
                                     successContent.classList.add('fade-up-in');
                                 }, 50);
+
+                                // şimdi reset'i 1 saniye gecikmeli yapıyoruz
+                                setTimeout(() => {
+                                    form.reset();
+                                }, 1000);
+
                             }, 300);
 
-                            // 4. Form değerlerini sıfırla
-                            form.reset();
-
-                            // 5. 10 saniye bekleyip eski haline döndür
-                            setTimeout(() => {
-                                resetButtonToOriginal();
-                            }, 13000);
+                            // eski haline döndürme zaten timeout’lu devam eder
+                            setTimeout(() => resetButtonToOriginal(), 13000);
                         });
-
-                        function resetButtonToOriginal() {
-                            // Başarı içeriğini aşağı kaydırarak gizle
-                            successContent.classList.remove('fade-up-in');
-
-                            setTimeout(() => {
-                                successContent.classList.add('hidden');
-                                btn.classList.remove('btn-success-active');
-                                btnText.style.display = 'inline-block';
-
-                                setTimeout(() => {
-                                    btnText.classList.remove('fade-up-out');
-                                }, 50);
-                            }, 400);
-                        }
                     </script>
-                    <iframe name="dummyframe" id="dummyframe" style="display:none;"></iframe>
+
+                
                     
                 </div>
                 <div class="lg:w-1/2 h-[600px] relative">
